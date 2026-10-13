@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#1f6feb" />
+  <meta name="description" content="Adeept DarkPaw 四脚ロボットをスマホのブラウザから操作するPWAコントローラー" />
+
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="DarkPaw" />
+  <link rel="apple-touch-icon" href="./icons/icon-192.png" />
+  <link rel="apple-touch-icon" sizes="152x152" href="./icons/icon-192.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="./icons/icon-192.png" />
+  <link rel="apple-touch-icon" sizes="167x167" href="./icons/icon-192.png" />
+  <meta name="apple-touch-startup-image" content="./icons/icon-512.png" />
+
+  <meta name="msapplication-TileColor" content="#1f6feb" />
+  <meta name="msapplication-TileImage" content="./icons/icon-512.png" />
+  <meta name="application-name" content="DarkPaw Controller" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="format-detection" content="telephone=no" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="./icons/icon-512.png" />
+  <link rel="icon" type="image/png" href="./icons/icon-192.png" />
+
+  <title>DarkPaw Controller</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="connection">
+      <span id="conn-dot" class="conn-dot disconnected"></span>
+      <span id="conn-text" class="conn-text">未接続</span>
+    </div>
+    <div class="topbar-actions">
+      <button id="btn-install" class="icon-btn" hidden title="アプリをインストール">⤓</button>
+      <button id="btn-settings" class="icon-btn" title="接続設定">⚙</button>
+    </div>
+  </header>
+
+  <div id="warn-banner" class="warn-banner hidden"></div>
+
+  <section id="install-banner" class="install-banner hidden">
+    <div class="install-banner-inner">
+      <div class="install-icon">📱</div>
+      <div class="install-text">
+        <b>ホーム画面に追加して使いましょう</b>
+        <span>スタンドアロン起動で全画面コントローラーになります。</span>
+      </div>
+      <button id="btn-install2" class="btn btn-primary" type="button">インストール</button>
+    </div>
+  </section>
+
+  <section class="video-section">
+    <div id="video-wrapper" class="video-wrapper">
+      <img id="video-feed" alt="ライブ映像（未接続）" />
+      <div id="video-placeholder" class="video-placeholder">
+        <span>📹 接続先IPを設定してください</span>
+      </div>
+    </div>
+    <div id="robot-info" class="robot-info">
+      <span>CPU: <b id="cpu-temp">--</b>℃</span>
+      <span>使用: <b id="cpu-use">--</b>%</span>
+      <span>RAM: <b id="ram-use">--</b>%</span>
+    </div>
+  </section>
+
+  <section class="controls">
+    <div class="dpad-block">
+      <button class="dpad dpad-up" data-cmd-press="forward" data-cmd-release="DS" aria-label="前進">▲</button>
+      <button class="dpad dpad-left" data-cmd-press="left" data-cmd-release="TS" aria-label="左旋回">◀</button>
+      <button class="dpad dpad-right" data-cmd-press="right" data-cmd-release="TS" aria-label="右旋回">▶</button>
+      <button class="dpad dpad-down" data-cmd-press="backward" data-cmd-release="DS" aria-label="後退">▼</button>
+      <button class="dpad dpad-center" data-cmd-tap="home" aria-label="ホーム（初期位置）">●</button>
+      <span class="dpad-label-up">前</span>
+      <span class="dpad-label-down">後</span>
+      <span class="dpad-label-left">左</span>
+      <span class="dpad-label-right">右</span>
+    </div>
+
+    <div class="side-buttons">
+      <div class="btn-row">
+        <button class="side-btn" data-cmd-tap="DS">停止 DS</button>
+        <button class="side-btn" data-cmd-tap="TS">旋回STOP</button>
+      </div>
+      <div class="btn-row">
+        <button class="side-btn" data-cmd-tap="lookleft">傾きL</button>
+        <button class="side-btn" data-cmd-tap="lookright">傾きR</button>
+      </div>
+      <div class="btn-row">
+        <button class="side-btn" data-cmd-tap="up">上昇</button>
+        <button class="side-btn" data-cmd-tap="down">下降</button>
+      </div>
+      <div class="btn-row">
+        <button class="side-btn switch-btn" data-cmd-on="Switch_1_on" data-cmd-off="Switch_1_off" data-sticky>PORT 1</button>
+        <button class="side-btn switch-btn" data-cmd-on="Switch_2_on" data-cmd-off="Switch_2_off" data-sticky>PORT 2</button>
+        <button class="side-btn switch-btn" data-cmd-on="Switch_3_on" data-cmd-off="Switch_3_off" data-sticky>PORT 3</button>
+      </div>
+      <div class="btn-row">
+        <button class="side-btn switch-btn" data-cmd-on="steadyCamera" data-cmd-off="steadyCameraOff" data-sticky>ステディ</button>
+        <button class="side-btn" data-cmd-tap="stopCV">CV停止</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 接続設定モーダル -->
+  <div id="settings-modal" class="modal hidden">
+    <div class="modal-inner">
+      <h2>接続設定</h2>
+      <label>
+        <span>Raspberry Pi の IP アドレス</span>
+        <input id="input-ip" type="text" inputmode="decimal" placeholder="例: 192.168.1.10" autocomplete="off" />
+      </label>
+      <p class="hint">HTTP:5000 (映像) / WebSocket:8888 (コマンド) に接続します。</p>
+      <div class="modal-actions">
+        <button id="btn-settings-cancel" class="btn btn-ghost" type="button">キャンセル</button>
+        <button id="btn-settings-save" class="btn btn-primary" type="button">保存して接続</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="./app.js"></script>
+</body>
+</html>
